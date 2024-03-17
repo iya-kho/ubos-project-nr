@@ -33,6 +33,11 @@
         "verboselogging": false
     },
     {
+        "id": "322b13076071946b",
+        "type": "google-cloud-credentials",
+        "name": "key"
+    },
+    {
         "id": "4d6c614856dc6506",
         "type": "telegram receiver",
         "z": "0fca18302699ba09",
@@ -55,7 +60,7 @@
         "type": "function",
         "z": "0fca18302699ba09",
         "name": "GPT 3.5 Request",
-        "func": "msg.fromApp = msg.payload;\nif (msg.payload.content == '/start') {\n    msg.payload = {\n        content: \"Даний бот відповідатиме як давньогрецький філософ Сократ, а картини малюватиме в українському стилі.\",\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [null, msg]\n}\nelse {\n    msg.method = \"POST\"\n    msg.url = 'https://api.openai.com/v1/chat/completions';\n    msg.headers = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer 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`,\n    };\n    msg.payload = {\n        \"model\": \"gpt-3.5-turbo-16k\",\n        \"temperature\": 0.2,\n        \"messages\": [\n\n            {\n                \"role\": \"system\", \"content\": `Ти давньогрецький філософ Сократ, який ділиться своєю мудрістю з наступними поколіннями. Будь ласка формулюй відповіді, так як б їх сформулював Сократ.`\n            },\n            {\n                \"role\": \"user\", \"content\": msg.fromApp.content\n            }\n        ]\n    }\n\n    return [msg, null];\n}\n",
+        "func": "msg.fromApp = msg.payload;\nif (msg.payload.content == '/start') {\n    msg.payload = {\n        content: \"Даний бот відповідатиме як давньогрецький філософ Сократ, а картини малюватиме в українському стилі.\",\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [null, msg]\n}\nelse {\n    msg.method = \"POST\"\n    msg.url = 'https://api.openai.com/v1/chat/completions';\n    msg.headers = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer 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`,\n    };\n    msg.payload = {\n        \"model\": \"gpt-3.5-turbo-16k\",\n        \"temperature\": 0.2,\n        \"messages\": [\n\n            {\n                \"role\": \"system\", \"content\": `Ти давньогрецький філософ Сократ, який ділиться своєю мудрістю з наступними поколіннями. Будь ласка формулюй відповіді, так як б їх сформулював Сократ.`\n            },\n            {\n                \"role\": \"user\", \"content\": msg.fromApp.content\n            }\n        ]\n    }\n\n    return [msg, null];\n}\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -219,7 +224,7 @@
         "type": "function",
         "z": "0fca18302699ba09",
         "name": "DALL-E 3 Request",
-        "func": "msg.method = \"POST\";\nmsg.prompt = `Make a visual representation of the following message, trying to avoid abstract images and to be as specific as possible. Here is the message: \"${msg.answer}\"`;\nmsg.url = 'https://api.openai.com/v1/images/generations';\nmsg.headers = {\n    'Content-Type': 'application/json',\n    'Authorization': `Bearer sk-CQVbfFzT9w8H97gpAFK1T3BlbkFJgnTteSu8youRAuL9MoLi`,\n};\nmsg.payload = {\n    \"model\": \"dall-e-3\",\n    \"prompt\": msg.prompt,\n    \"n\": 1,\n    \"size\": \"1024x1024\"\n}\n\nreturn msg;",
+        "func": "msg.method = \"POST\";\nmsg.prompt = `Make a visual representation of the following message, trying to avoid abstract images and to be as specific as possible. Here is the message: \"${msg.answer}\"`;\nmsg.url = 'https://api.openai.com/v1/images/generations';\nmsg.headers = {\n    'Content-Type': 'application/json',\n    'Authorization': `Bearer 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`,\n};\nmsg.payload = {\n    \"model\": \"dall-e-3\",\n    \"prompt\": msg.prompt,\n    \"n\": 1,\n    \"size\": \"1024x1024\"\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -309,7 +314,7 @@
         "wires": [
             [
                 "edf288a479450b43",
-                "0c474fbb098c02ee"
+                "eba81ef2d3c9b2d5"
             ],
             [
                 "ee17b7e30bfb0b13"
@@ -324,8 +329,8 @@
         "bot": "37943774550e66fb",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 1550,
-        "y": 160,
+        "x": 1570,
+        "y": 120,
         "wires": [
             []
         ]
@@ -345,18 +350,165 @@
         ]
     },
     {
-        "id": "0c474fbb098c02ee",
+        "id": "a3889201b71ff9ba",
+        "type": "google-cloud-text-to-speech",
+        "z": "0fca18302699ba09",
+        "account": "322b13076071946b",
+        "keyFilename": "",
+        "name": "",
+        "languageCode": "uk-UA",
+        "gender": "MALE",
+        "encoding": "MP3",
+        "rate": 1,
+        "pitch": 0,
+        "voiceName": "",
+        "x": 1820,
+        "y": 220,
+        "wires": [
+            [
+                "3913940798cd3a5e"
+            ]
+        ]
+    },
+    {
+        "id": "eba81ef2d3c9b2d5",
         "type": "function",
         "z": "0fca18302699ba09",
-        "name": "function 1",
-        "func": "\nreturn msg;",
+        "name": "Text To Speech Request",
+        "func": "msg.payload = msg.answer;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1580,
+        "x": 1590,
         "y": 220,
+        "wires": [
+            [
+                "a3889201b71ff9ba",
+                "4e3563a581e28b34"
+            ]
+        ]
+    },
+    {
+        "id": "4e3563a581e28b34",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "Text To Speech Request",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1770,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "3913940798cd3a5e",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "CheckResponse",
+        "func": "if (msg.statusCode == 200) {\n    msg.headers = {\n        \"content-type\": \"audio/mpeg3;audio/x-mpeg-3;video/mpeg;video/x-mpeg;text/xml\",\n        \"content-disposition\": \"attachment; filename=file.mp3\"\n    }\n\n    msg.payload.file = msg.payload.audio.data;\n    msg.payload = msg.payload.file;\n\n    return [msg, null];\n}\nelse {\n    msg.payload = {\n        content: JSON.stringify(msg.payload),\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n\n    return [null, msg];\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2040,
+        "y": 220,
+        "wires": [
+            [
+                "1848c4f515afcc51",
+                "11fea4622320ac77"
+            ],
+            [
+                "0fbca7bb7b53d2b5"
+            ]
+        ]
+    },
+    {
+        "id": "1848c4f515afcc51",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "Text To Speech",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2100,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "11fea4622320ac77",
+        "type": "file",
+        "z": "0fca18302699ba09",
+        "name": "",
+        "filename": "/data/audio.wav",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 2260,
+        "y": 220,
+        "wires": [
+            [
+                "74da3bfeec220c79"
+            ]
+        ]
+    },
+    {
+        "id": "74da3bfeec220c79",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "Send Audio",
+        "func": "msg.payload = {\n    content: msg.filename,\n    type: \"voice\",\n    chatId: msg.fromApp.chatId,\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2450,
+        "y": 220,
+        "wires": [
+            [
+                "468daf8cea2c3f6e"
+            ]
+        ]
+    },
+    {
+        "id": "468daf8cea2c3f6e",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Audio",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 2650,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0fbca7bb7b53d2b5",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Error Message",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 2200,
+        "y": 300,
         "wires": [
             []
         ]
