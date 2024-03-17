@@ -308,7 +308,8 @@
         "y": 220,
         "wires": [
             [
-                "edf288a479450b43"
+                "edf288a479450b43",
+                "0c474fbb098c02ee"
             ],
             [
                 "ee17b7e30bfb0b13"
@@ -339,6 +340,23 @@
         "outputs": 1,
         "x": 1580,
         "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0c474fbb098c02ee",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "function 1",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1580,
+        "y": 220,
         "wires": [
             []
         ]
