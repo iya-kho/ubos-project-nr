@@ -1,1 +1,346 @@
-[]
+[
+    {
+        "id": "0fca18302699ba09",
+        "type": "tab",
+        "label": "TG ChatBot",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "37943774550e66fb",
+        "type": "telegram bot",
+        "botname": "ikh_ubos_bot",
+        "usernames": "@ikh111",
+        "chatids": "271598967",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "4d6c614856dc6506",
+        "type": "telegram receiver",
+        "z": "0fca18302699ba09",
+        "name": "",
+        "bot": "37943774550e66fb",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "x": 90,
+        "y": 220,
+        "wires": [
+            [
+                "17427105b8b62fee",
+                "52eee6e786a77b9a"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "17427105b8b62fee",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "GPT 3.5 Request",
+        "func": "msg.fromApp = msg.payload;\nif (msg.payload.content == '/start') {\n    msg.payload = {\n        content: \"Даний бот відповідатиме як давньогрецький філософ Сократ, а картини малюватиме в українському стилі.\",\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [null, msg]\n}\nelse {\n    msg.method = \"POST\"\n    msg.url = 'https://api.openai.com/v1/chat/completions';\n    msg.headers = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer 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`,\n    };\n    msg.payload = {\n        \"model\": \"gpt-3.5-turbo-16k\",\n        \"temperature\": 0.2,\n        \"messages\": [\n\n            {\n                \"role\": \"system\", \"content\": `Ти давньогрецький філософ Сократ, який ділиться своєю мудрістю з наступними поколіннями. Будь ласка формулюй відповіді, так як б їх сформулював Сократ.`\n            },\n            {\n                \"role\": \"user\", \"content\": msg.fromApp.content\n            }\n        ]\n    }\n\n    return [msg, null];\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 220,
+        "wires": [
+            [
+                "cacfc3bf54ae4369",
+                "fa05840cac26e399"
+            ],
+            [
+                "cfad73f0daadf7f6"
+            ]
+        ]
+    },
+    {
+        "id": "52eee6e786a77b9a",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "Input Data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 210,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "cacfc3bf54ae4369",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "GPT 3.5 Request",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "fa05840cac26e399",
+        "type": "http request",
+        "z": "0fca18302699ba09",
+        "name": "Request",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 520,
+        "y": 220,
+        "wires": [
+            [
+                "0ff19697a93e12db",
+                "25ca1ec6f6d8d220"
+            ]
+        ]
+    },
+    {
+        "id": "0ff19697a93e12db",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "GPT 3.5 Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "25ca1ec6f6d8d220",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "CheckResponse",
+        "func": "if (msg.statusCode == 200) {\n    msg.answer = msg.payload.choices[0].message.content\n    msg.payload = {\n        content: msg.answer,\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [msg, null];\n}\nelse {\n    msg.payload = {\n        content: JSON.stringify(msg.payload),\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n\n    return [null, msg]\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 220,
+        "wires": [
+            [
+                "1aaf2926dd410eae",
+                "2d166920fe9cdae7"
+            ],
+            [
+                "e2f28857d8b5bf84"
+            ]
+        ]
+    },
+    {
+        "id": "1aaf2926dd410eae",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Result",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 890,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cfad73f0daadf7f6",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Intro Message",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 460,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e2f28857d8b5bf84",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Error Message",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 880,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2d166920fe9cdae7",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "DALL-E 3 Request",
+        "func": "msg.method = \"POST\";\nmsg.prompt = `Make a visual representation of the following message, trying to avoid abstract images and to be as specific as possible. Here is the message: \"${msg.answer}\"`;\nmsg.url = 'https://api.openai.com/v1/images/generations';\nmsg.headers = {\n    'Content-Type': 'application/json',\n    'Authorization': `Bearer sk-CQVbfFzT9w8H97gpAFK1T3BlbkFJgnTteSu8youRAuL9MoLi`,\n};\nmsg.payload = {\n    \"model\": \"dall-e-3\",\n    \"prompt\": msg.prompt,\n    \"n\": 1,\n    \"size\": \"1024x1024\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 220,
+        "wires": [
+            [
+                "70bf0a5de89f9495",
+                "a949dbf26ae4b543"
+            ]
+        ]
+    },
+    {
+        "id": "70bf0a5de89f9495",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "DALL-E 3 Request",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1090,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "a949dbf26ae4b543",
+        "type": "http request",
+        "z": "0fca18302699ba09",
+        "name": "Request",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1140,
+        "y": 220,
+        "wires": [
+            [
+                "d77a92b8aadd959d",
+                "6e46f1e1d77e6e0b"
+            ]
+        ]
+    },
+    {
+        "id": "d77a92b8aadd959d",
+        "type": "debug",
+        "z": "0fca18302699ba09",
+        "name": "DALL-E 3 Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "6e46f1e1d77e6e0b",
+        "type": "function",
+        "z": "0fca18302699ba09",
+        "name": "CheckResponse",
+        "func": "if (msg.statusCode == 200) {\n    msg.imageUrl = msg.payload.data[0].url;\n    msg.payload = {\n        content: msg.imageUrl,\n        type: \"photo\",\n        chatId: msg.fromApp.chatId,\n    }\n    return [msg, null];\n}\nelse {\n    msg.payload = {\n        content: JSON.stringify(msg.payload),\n        type: \"message\",\n        chatId: msg.fromApp.chatId,\n    }\n\n    return [null, msg]\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1360,
+        "y": 220,
+        "wires": [
+            [
+                "edf288a479450b43"
+            ],
+            [
+                "ee17b7e30bfb0b13"
+            ]
+        ]
+    },
+    {
+        "id": "edf288a479450b43",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Result",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1550,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ee17b7e30bfb0b13",
+        "type": "telegram sender",
+        "z": "0fca18302699ba09",
+        "name": "Send Error Message",
+        "bot": "37943774550e66fb",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1580,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    }
+]
